@@ -2,13 +2,11 @@
 @import 'base/atom';
 
 html {
-    background: transparent url("../images/idev.png") repeat scroll 0 0;
     font-family: Tahoma, Arial, "Hiragino Sans GB W3", STHeiti, "Microsoft YaHei";
 }
 
 body {
     font-family: "TheSerifRegular", "TheSerif", "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "微软雅黑", "WenQuanYi Zen Hei", "文泉驿正黑", "WenQuanYi Micro Hei", "文泉驿微米黑", "times new roman", "times", serif;
-    background: transparent url("../images/idev.png") repeat scroll 0 0;
 }
 
 a.btn-small {
@@ -866,3 +864,18 @@ form {
         }
     }
 }
+
+.about-me-pic {
+  height: 180px;
+  border: 10px solid #E5E5E5;
+  background: url("../images/myphoto.png") no-repeat;
+  background-size: 180px 180px;
+  background-position: center bottom;
+  float: left; }
+  
+  .about-me .about-me-splitter {
+  border-left: 1px solid #E5E5E5;
+  border-right: 1px solid white;
+  height: 200px;
+  width: 1px;
+  margin: 5px 15px 0 35px; }

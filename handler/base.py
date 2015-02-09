@@ -61,7 +61,8 @@ class BaseHandler(tornado.web.RequestHandler):
     def mc(self):
         return self.application.mc
 
-#    def get_current_user(self):
+    def get_current_user(self):
+        return None
 #        user_id = self.get_secure_cookie("user")
 #        if not user_id: return None
 #        return self.user_model.get_user_by_uid(int(user_id))

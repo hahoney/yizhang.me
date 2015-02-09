@@ -27,7 +27,7 @@ from lib.xss import XssCleaner
 from lib.utils import find_mentions
 
 class IndexHandler(BaseHandler):
-    def get(self, template_variables = {}):
+    def get(self, template_variables={}):
         user_info = self.current_user
         page = int(self.get_argument("p", "1"))
         template_variables["user_info"] = user_info
@@ -56,10 +56,19 @@ class IndexHandler(BaseHandler):
         template_variables["hot_nodes"] = {}
         template_variables["active_page"] = {}
         template_variables["gen_random"] = {}
-        self.render("topic/topics.html", **template_variables)
-
-class NodeTopicsHandler(BaseHandler):
-    def get(self, node_slug, template_variables = {}):
+        self.render("topic/index.html", **template_variables)
+        
+class AboutHandler(BaseHandler):
+    def get(self, template_variables={}):
+        user_info = self.current_user
+        template_variables["topics"] = {}
+        template_variables["node"] = {}
+        template_variables["active_page"] = {}
+        template_variables["gen_random"] = {}
+        self.render("topic/about.html", **template_variables)  
+         
+class BlogHandler(BaseHandler):
+    def get(self, template_variables={}):
         user_info = self.current_user
         page = int(self.get_argument("p", "1"))
         template_variables["user_info"] = user_info
@@ -69,14 +78,32 @@ class NodeTopicsHandler(BaseHandler):
                 "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
-        template_variables["topics"] = self.topic_model.get_all_topics_by_node_slug(current_page = page, node_slug = node_slug)
+        template_variables["topics"] = {}
+        template_variables["node"] = {}
+        template_variables["active_page"] = {}
+        template_variables["gen_random"] = {}
+        self.render("topic/blog.html", **template_variables)        
+        
+
+class NodeTopicsHandler(BaseHandler):
+    def get(self, node_slug, template_variables={}):
+        user_info = self.current_user
+        page = int(self.get_argument("p", "1"))
+        template_variables["user_info"] = user_info
+        if(user_info):
+            template_variables["user_info"]["counter"] = {
+                "topics": self.topic_model.get_user_all_topics_count(user_info["uid"]),
+                "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
+                "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
+            }
+        template_variables["topics"] = self.topic_model.get_all_topics_by_node_slug(current_page=page, node_slug=node_slug)
         template_variables["node"] = self.node_model.get_node_by_node_slug(node_slug)
         template_variables["active_page"] = "topic"
         template_variables["gen_random"] = gen_random
         self.render("topic/node_topics.html", **template_variables)
 
 class ViewHandler(BaseHandler):
-    def get(self, topic_id, template_variables = {}):
+    def get(self, topic_id, template_variables={}):
         user_info = self.current_user
         page = int(self.get_argument("p", "1"))
         user_info = self.get_current_user()
@@ -98,7 +125,7 @@ class ViewHandler(BaseHandler):
         template_variables["reply_num"] = reply_num
         template_variables["current_page"] = page
 
-        template_variables["replies"] = self.reply_model.get_all_replies_by_topic_id(topic_id, current_page = page)
+        template_variables["replies"] = self.reply_model.get_all_replies_by_topic_id(topic_id, current_page=page)
         template_variables["active_page"] = "topic"
 
         # update topic reply_count and hits
@@ -111,7 +138,7 @@ class ViewHandler(BaseHandler):
         self.render("topic/view.html", **template_variables)
 
     @tornado.web.authenticated
-    def post(self, template_variables = {}):
+    def post(self, template_variables={}):
         template_variables = {}
 
         # validate the fields
@@ -156,7 +183,7 @@ class ViewHandler(BaseHandler):
         if not self.current_user["uid"] == topic_info["author_id"]:
             self.notification_model.add_new_notification({
                 "trigger_user_id": self.current_user["uid"],
-                "involved_type": 1, # 0: mention, 1: reply
+                "involved_type": 1,  # 0: mention, 1: reply
                 "involved_user_id": topic_info["author_id"],
                 "involved_topic_id": form.tid.data,
                 "content": form.content.data,
@@ -180,7 +207,7 @@ class ViewHandler(BaseHandler):
 
             self.notification_model.add_new_notification({
                 "trigger_user_id": self.current_user["uid"],
-                "involved_type": 0, # 0: mention, 1: reply
+                "involved_type": 0,  # 0: mention, 1: reply
                 "involved_user_id": mentioned_user["uid"],
                 "involved_topic_id": form.tid.data,
                 "content": form.content.data,
@@ -200,7 +227,7 @@ class ViewHandler(BaseHandler):
 
 class CreateHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self, node_slug = None, template_variables = {}):
+    def get(self, node_slug=None, template_variables={}):
         user_info = self.current_user
         template_variables["user_info"] = user_info
         template_variables["user_info"]["counter"] = {
@@ -214,7 +241,7 @@ class CreateHandler(BaseHandler):
         self.render("topic/create.html", **template_variables)
 
     @tornado.web.authenticated
-    def post(self, node_slug = None, template_variables = {}):
+    def post(self, node_slug=None, template_variables={}):
         template_variables = {}
 
         # validate the fields
@@ -251,7 +278,7 @@ class CreateHandler(BaseHandler):
 
 class EditHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self, topic_id, template_variables = {}):
+    def get(self, topic_id, template_variables={}):
         user_info = self.current_user
         template_variables["user_info"] = user_info
         template_variables["user_info"]["counter"] = {
@@ -265,7 +292,7 @@ class EditHandler(BaseHandler):
         self.render("topic/edit.html", **template_variables)
 
     @tornado.web.authenticated
-    def post(self, topic_id, template_variables = {}):
+    def post(self, topic_id, template_variables={}):
         template_variables = {}
 
         # validate the fields
@@ -304,7 +331,7 @@ class EditHandler(BaseHandler):
         self.redirect("/t/%s" % topic_id)
 
 class ProfileHandler(BaseHandler):
-    def get(self, user, template_variables = {}):
+    def get(self, user, template_variables={}):
         if(re.match(r'^\d+$', user)):
             user_info = self.user_model.get_user_by_uid(user)
         else:
@@ -326,14 +353,14 @@ class ProfileHandler(BaseHandler):
             template_variables["github_repos"] = github_repos
         '''
 
-        template_variables["topics"] = self.topic_model.get_user_all_topics(user_info["uid"], current_page = page)
-        template_variables["replies"] = self.reply_model.get_user_all_replies(user_info["uid"], current_page = page)
+        template_variables["topics"] = self.topic_model.get_user_all_topics(user_info["uid"], current_page=page)
+        template_variables["replies"] = self.reply_model.get_user_all_replies(user_info["uid"], current_page=page)
         template_variables["gen_random"] = gen_random
         template_variables["active_page"] = "_blank"
         self.render("topic/profile.html", **template_variables)
 
 class VoteHandler(BaseHandler):
-    def get(self, template_variables = {}):
+    def get(self, template_variables={}):
         topic_id = int(self.get_argument("topic_id"))
         topic_info = self.topic_model.get_topic_by_topic_id(topic_id)
 
@@ -360,7 +387,7 @@ class VoteHandler(BaseHandler):
 
         self.vote_model.add_new_vote({
             "trigger_user_id": self.current_user["uid"],
-            "involved_type": 0, # 0: topic, 1: reply
+            "involved_type": 0,  # 0: topic, 1: reply
             "involved_user_id": topic_info["author_id"],
             "involved_topic_id": topic_id,
             "status": 0,
@@ -379,7 +406,7 @@ class VoteHandler(BaseHandler):
         self.user_model.set_user_base_info_by_uid(topic_info["author_id"], {"reputation": reputation})
 
 class UserTopicsHandler(BaseHandler):
-    def get(self, user, template_variables = {}):
+    def get(self, user, template_variables={}):
         if(re.match(r'^\d+$', user)):
             user_info = self.user_model.get_user_by_uid(user)
         else:
@@ -393,13 +420,13 @@ class UserTopicsHandler(BaseHandler):
                 "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
-        template_variables["topics"] = self.topic_model.get_user_all_topics(user_info["uid"], current_page = page)
+        template_variables["topics"] = self.topic_model.get_user_all_topics(user_info["uid"], current_page=page)
         template_variables["active_page"] = "topic"
         template_variables["gen_random"] = gen_random
         self.render("topic/user_topics.html", **template_variables)
 
 class UserRepliesHandler(BaseHandler):
-    def get(self, user, template_variables = {}):
+    def get(self, user, template_variables={}):
         if(re.match(r'^\d+$', user)):
             user_info = self.user_model.get_user_by_uid(user)
         else:
@@ -413,13 +440,13 @@ class UserRepliesHandler(BaseHandler):
                 "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
-        template_variables["replies"] = self.reply_model.get_user_all_replies(user_info["uid"], current_page = page)
+        template_variables["replies"] = self.reply_model.get_user_all_replies(user_info["uid"], current_page=page)
         template_variables["active_page"] = "topic"
         template_variables["gen_random"] = gen_random
         self.render("topic/user_replies.html", **template_variables)
 
 class UserFavoritesHandler(BaseHandler):
-    def get(self, user, template_variables = {}):
+    def get(self, user, template_variables={}):
         if(re.match(r'^\d+$', user)):
             user_info = self.user_model.get_user_by_uid(user)
         else:
@@ -433,14 +460,14 @@ class UserFavoritesHandler(BaseHandler):
                 "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
-        template_variables["favorites"] = self.favorite_model.get_user_all_favorites(user_info["uid"], current_page = page)
+        template_variables["favorites"] = self.favorite_model.get_user_all_favorites(user_info["uid"], current_page=page)
         template_variables["active_page"] = "topic"
         template_variables["gen_random"] = gen_random
         self.render("topic/user_favorites.html", **template_variables)
 
 class ReplyEditHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self, reply_id, template_variables = {}):
+    def get(self, reply_id, template_variables={}):
         user_info = self.current_user
         template_variables["user_info"] = user_info
         template_variables["user_info"]["counter"] = {
@@ -454,7 +481,7 @@ class ReplyEditHandler(BaseHandler):
         self.render("topic/reply_edit.html", **template_variables)
 
     @tornado.web.authenticated
-    def post(self, reply_id, template_variables = {}):
+    def post(self, reply_id, template_variables={}):
         template_variables = {}
 
         # validate the fields
@@ -491,7 +518,7 @@ class ReplyEditHandler(BaseHandler):
         self.redirect("/t/%s" % reply_info["topic_id"])
 
 class FavoriteHandler(BaseHandler):
-    def get(self, template_variables = {}):
+    def get(self, template_variables={}):
         topic_id = int(self.get_argument("topic_id"))
         topic_info = self.topic_model.get_topic_by_topic_id(topic_id)
 
@@ -518,7 +545,7 @@ class FavoriteHandler(BaseHandler):
 
         self.favorite_model.add_new_favorite({
             "owner_user_id": self.current_user["uid"],
-            "involved_type": 0, # 0: topic, 1: reply
+            "involved_type": 0,  # 0: topic, 1: reply
             "involved_topic_id": topic_id,
             "created": time.strftime('%Y-%m-%d %H:%M:%S'),
         })
@@ -535,7 +562,7 @@ class FavoriteHandler(BaseHandler):
         self.user_model.set_user_base_info_by_uid(topic_info["author_id"], {"reputation": reputation})
 
 class MembersHandler(BaseHandler):
-    def get(self, template_variables = {}):
+    def get(self, template_variables={}):
         user_info = self.current_user
         template_variables["user_info"] = user_info
         template_variables["user_info"]["counter"] = {
@@ -543,8 +570,8 @@ class MembersHandler(BaseHandler):
             "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
             "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
         }
-        template_variables["members"] = self.user_model.get_users_by_latest(num = 49)
-        template_variables["active_members"] = self.user_model.get_users_by_last_login(num = 49)
+        template_variables["members"] = self.user_model.get_users_by_latest(num=49)
+        template_variables["active_members"] = self.user_model.get_users_by_last_login(num=49)
         template_variables["gen_random"] = gen_random
         template_variables["active_page"] = "members"
         self.render("topic/members.html", **template_variables)
