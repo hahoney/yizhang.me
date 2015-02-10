@@ -39,32 +39,21 @@ class IndexHandler(BaseHandler):
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
 
-#        template_variables["status_counter"] = {
-#            "users": self.user_model.get_all_users_count(),
-#            "nodes": self.node_model.get_all_nodes_count(),
-#            "topics": self.topic_model.get_all_topics_count(),
-#            "replies": self.reply_model.get_all_replies_count(),
-#        }
-#        template_variables["topics"] = self.topic_model.get_all_topics(current_page = page)
-#        template_variables["planes"] = self.plane_model.get_all_planes_with_nodes()
-#        template_variables["hot_nodes"] = self.node_model.get_all_hot_nodes()
-#        template_variables["active_page"] = "topic"
-#        template_variables["gen_random"] = gen_random
-        template_variables["status_counter"] = {}
-        template_variables['topics'] = {}
-        template_variables["planes"] = {}
-        template_variables["hot_nodes"] = {}
-        template_variables["active_page"] = {}
-        template_variables["gen_random"] = {}
+        template_variables["status_counter"] = {
+            "users": self.user_model.get_all_users_count(),
+            "nodes": self.node_model.get_all_nodes_count(),
+            "topics": self.topic_model.get_all_topics_count(),
+            "replies": self.reply_model.get_all_replies_count(),
+        }
+        template_variables["topics"] = self.topic_model.get_all_topics(current_page = page)
+        template_variables["planes"] = self.plane_model.get_all_planes_with_nodes()
+        template_variables["hot_nodes"] = self.node_model.get_all_hot_nodes()
+        template_variables["active_page"] = "topic"
+        template_variables["gen_random"] = gen_random
         self.render("topic/index.html", **template_variables)
         
 class AboutHandler(BaseHandler):
     def get(self, template_variables={}):
-        user_info = self.current_user
-        template_variables["topics"] = {}
-        template_variables["node"] = {}
-        template_variables["active_page"] = {}
-        template_variables["gen_random"] = {}
         self.render("topic/about.html", **template_variables)  
          
 class BlogHandler(BaseHandler):
@@ -78,10 +67,11 @@ class BlogHandler(BaseHandler):
                 "replies": self.reply_model.get_user_all_replies_count(user_info["uid"]),
                 "favorites": self.favorite_model.get_user_favorite_count(user_info["uid"]),
             }
-        template_variables["topics"] = {}
-        template_variables["node"] = {}
-        template_variables["active_page"] = {}
-        template_variables["gen_random"] = {}
+        template_variables["topics"] = self.topic_model.get_all_topics(current_page = page)
+        template_variables["planes"] = self.plane_model.get_all_planes_with_nodes()
+        template_variables["hot_nodes"] = self.node_model.get_all_hot_nodes()
+        template_variables["active_page"] = "topic"
+        template_variables["gen_random"] = gen_random
         self.render("topic/blog.html", **template_variables)        
         
 

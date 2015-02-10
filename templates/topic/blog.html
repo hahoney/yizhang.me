@@ -1,144 +1,58 @@
-{% extends 'snippet/layout.html' %}
+{% extends 'snippet/layout.html' %} {% block main %}
+<style>
+a:link {
+	color: #000000;
+}
 
-{% block main %}
+/* visited link */
+a:visited {
+	color: #000000;
+}
 
-    <div class="topics container-box deprecated-mt10">
-        {% for topic in topics.list %}
-            <div class="topic-item">
-                <a href="/u/{{ topic.author_username }}">
-                    <img src="/static/avatar/m_{{ topic.author_avatar or 'default.png' }}" alt="" class="avatar" />
-                </a>
-                <div class="main">
-                    <h3 class="title">
-                        <a href="/t/{{ topic.id }}#reply{{ topic.reply_count or 0 }}">{{ topic.title }}</a>
-                    </h3>
-                    <div class="meta">
-                        <span class="node"><a href="/node/{{ topic.node_slug }}">{{ topic.node_name }}</a></span> • 
-                        <span class="username">
-                            <a href="/u/{{ topic.author_username or topic.author_uid }}">{{ topic.author_username }}</a>
-                        </span> • 
-                        {% if topic.last_replied_time %}
-                            <span class="last-touched">{{ topic.last_touched|pretty_date }}</span> • 
-                            <span class="last-reply-username">最后回复来自
-                                <a href="/u/{{ topic.last_replied_username or topic.last_replied_uid }}">
-                                    <strong>{{ topic.last_replied_username }}</strong>
-                                </a>
-                            </span>
-                        {% else %}
-                            <span class="last-touched">{{ topic.last_touched|pretty_date }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if topic.reply_count %}
-                    <div class="count">
-                        <a href="/t/{{ topic.id }}#reply{{ topic.reply_count or 0 }}">{{ topic.reply_count or 0 }}</a>
-                    </div>
-                {% endif %}
-            </div>
-        {% endfor %}
+/* mouse over link */
+a:hover {
+	color: #FF00FF;
+}
 
-        <div class="pagination">
-            {{ topics.page|pagination(request.uri) }}
-        </div>
-    </div>
+/* selected link */
+a:active {
+	color: #0000FF;
+}
+</style>
 
-    <div class="nodes-cloud container-box mt10">
-        <h4 class="title">F2E / 常见节点导航</h4>
-        <ul>
-            {% for plane in planes %}
-                <li>
-                    <label for="">{{ plane.name }}</label>
-                    <span class="nodes">
-                        {% for node in plane.nodes %}
-                            <a href="/node/{{ node.slug }}">{{ node.name }}</a>
-                        {% endfor %}
-                    </span>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endblock %}
 
-{% block sidebar %}
-    {% if current_user %}
-        <div class="usercard container-box">
-            <div class="ui-header">
-                <a href="/u/{{ user_info.username }}">
-                    <img src="/static/avatar/m_{{ user_info.avatar or 'default.png' }}?t={{ gen_random() }}" alt="" class="avatar" />
-                </a>
-                <div class="username">{{ user_info.username }}</div>
-                <div class="website"><a href="{{ user_info.website or '' }}">{{ user_info.website or '' }}</a></div>
-            </div>
-            <div class="ui-content">
-                <div class="status status-topic">
-                    <strong><a href="/u/{{ user_info.username }}/topics">{{ user_info.counter.topics }}</a></strong> 主题
-                </div>
-                <div class="status status-reply">
-                    <strong><a href="/u/{{ user_info.username }}/replies">{{ user_info.counter.replies }}</a></strong> 回复
-                </div>
-                <div class="status status-favorite">
-                    <strong><a href="/u/{{ user_info.username }}/favorites">{{ user_info.counter.favorites }}</a></strong> 收藏
-                </div>
-                <div class="status status-reputation">
-                    <strong>{{ user_info.reputation or 0 }}</strong> 威望
-                </div>
-            </div>
-        </div>
-        {% if user_info.counter.notifications %}
-            <div class="alert mt10 mb10">
-                <span>
-                    <a href="/notifications">{{ user_info.nickname or user_info.username }}，你有{{ user_info.counter.notifications }}条未读提醒，去看看吧</a>
-                </span>
-            </div>
-        {% endif %}
-    {% else %}
-        <div class="login-box container-box">
-            <div class="ui-content tc">
-                <a class="btn btn-small" type="button" href="/login">登录</a>
-                <a class="btn btn-small" type="button" href="/register">注册</a>
-                <a class="btn btn-small" type="button" href="/forgot">找回密码</a>
-            </div>
-        </div>
-    {% endif %}
+<div class="topics container-box deprecated-mt10">
+	{% for topic in topics.list %}
+	<div class="topic-item">
+		<ul class="entry-list">
+			<li class="entry-item">
+				<div class="entry-meta">
+					<time class="updated">Sep 15, 2009</time>
+					<em>782 words</em>
+				</div>
+				<div class="detail">
+					<h2>
+						<a href="/zh/2008/murmurs">碎碎念</a>
+					</h2>
+					<a href="/zh/2008/murmurs" class="description">謊言是必須的，它給這戲劇性的人生又憑添了一重戲劇感。我經常說謊，以為是很快樂的事情。當然總是在說過後向別人解釋一下，這是一個謊言。</a>
+				</div>
+			</li>
+		</ul>
+	</div>
+	{% endfor %}
 
-    <div class="sidebox container-box mt10">
-        <div class="ui-header">
-            <span class="title">微信公共帐号</span>
-        </div>
-        <div class="ui-content">
-            <img src="/static/images/qrcode_for_gh_81ac76ebf8e3_258.jpg" alt="" />
-        </div>
-    </div>
+	<div class="pagination">{{ topics.page|pagination(request.uri) }}
+	</div>
+</div>
 
-    <div class="sidebox container-box mt10 hot-nodes">
-        <div class="ui-header">
-            <span class="title">最热节点</span>
-        </div>
-        <div class="ui-content">
-            {% for node in hot_nodes %}
-                <a href="/node/{{ node.slug }}">{{ node.name }}</a>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="sidebox container-box mt10 friends">
-        <div class="ui-header">
-            <span class="title">友情社区</span>
-        </div>
-        <div class="ui-content">
-            <p><a href="http://python-china.org"><img src="/static/images/python_china_logo.jpg" alt="" /></a></p>
-            <p><a href="http://ruby-china.org"><img src="/static/images/ruby_china_logo.png" alt="" /></a></p>
-        </div>
-    </div>
-
-    <div class="sidebox container-box mt10 friends">
-        <div class="ui-header">
-            <span class="title">我们的标志</span>
-        </div>
-        <div class="ui-content">
-            <p><a href="http://f2e.im"><img src="/static/images/f2e.im.logo.png" alt="" /></a></p>
-        </div>
-    </div>
-
+<div class="nodes-cloud container-box mt10">
+	<h4 class="title">F2E / 常见节点导航</h4>
+	<ul>
+		{% for plane in planes %}
+		<li><label for="">{{ plane.name }}</label> <span class="nodes">
+				{% for node in plane.nodes %} <a href="/node/{{ node.slug }}">{{
+					node.name }}</a> {% endfor %}
+		</span></li> {% endfor %}
+	</ul>
 </div>
 {% endblock %}

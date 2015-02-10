@@ -13,7 +13,7 @@ import helper
 class BaseHandler(tornado.web.RequestHandler):
     def __init__(self, *argc, **argkw):
         super(BaseHandler, self).__init__(*argc, **argkw)
-#        self.session = lib.session.Session(self.application.session_manager, self)
+        self.session = lib.session.Session(self.application.session_manager, self)
         self.jinja2 = self.settings.get("jinja2")
         self.jinja2 = helper.Filters(self.jinja2).register()
 
@@ -62,10 +62,9 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.application.mc
 
     def get_current_user(self):
-        return None
-#        user_id = self.get_secure_cookie("user")
-#        if not user_id: return None
-#        return self.user_model.get_user_by_uid(int(user_id))
+        user_id = self.get_secure_cookie("user")
+        if not user_id: return None
+        return self.user_model.get_user_by_uid(int(user_id))
 
     def render(self, template_name, **template_vars):
         html = self.render_string(template_name, **template_vars)
