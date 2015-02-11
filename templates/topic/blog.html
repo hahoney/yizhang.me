@@ -21,6 +21,15 @@ a:active {
 </style>
 
 
+{% if current_user %}
+<form action="/t/create/" method="get">
+<div class="yue section-input">
+	<input type="url" placeholder="Enter source link or blank for new post:" name="source" />
+	<button data-url="" class="button">Submit</button>
+</div>
+</form>
+{% endif %}
+
 <div class="topics container-box deprecated-mt10">
 	{% for topic in topics.list %}
 	<div class="topic-item">
@@ -28,15 +37,16 @@ a:active {
 			<li class="entry-item">
 				<div class="detail">
 					<h2>
-						<a href="/zh/2008/murmurs">碎碎念</a>
+						<a href="/zh/2008/murmurs">{{ topic.title }}</a>
 					</h2>
 					<div class="entry-meta">
 						<time class="updated">{{ topic.last_touched }}</time>
-						<span class="dot">&middot;</span> <em> www.auntbear.com {{ 782 }} words</em>
+						<span class="dot">&middot;</span> <em> www.auntbear.com {{
+							782 }} words</em>
 					</div>
-					<a href="/zh/2008/murmurs" class="description">謊言是必須的，它給這戲劇性的人生又憑添了一重戲劇感。
-					我經常說謊，以為是很快樂的事情。當然總是在說過後向別人解釋一下。
-				    <span class="entry-meta">view full</span></a>
+					<a href="/zh/2008/murmurs" class="description">{{ topic.content }} <span class="entry-meta">view
+							full</span>
+					</a>
 				</div>
 			</li>
 		</ul>
