@@ -107,26 +107,26 @@ class Filters():
 
         if day_diff == 0:
             if second_diff < 10:
-                return "刚刚"
+                return "just now"
             if second_diff < 60:
-                return str(second_diff) + " 秒前"
+                return str(second_diff) + " seconds ago"
             if second_diff < 120:
-                return  "1 分钟前"
+                return  "1 minute ago"
             if second_diff < 3600:
-                return str(second_diff / 60) + " 分钟前"
+                return str(second_diff / 60) + " minutes ago"
             if second_diff < 7200:
-                return "1 小时前"
+                return "1 hour ago"
             if second_diff < 86400:
-                return str(second_diff / 3600) + " 小时前"
+                return str(second_diff / 3600) + " hours ago"
         if day_diff == 1:
-            return "昨天"
+            return "yesterday"
         if day_diff < 7:
-            return str(day_diff) + " 天前"
+            return str(day_diff) + " days ago"
         if day_diff < 31:
-            return str(day_diff / 7) + " 周前"
+            return str(day_diff / 7) + " weeks ago"
         if day_diff < 365:
-            return str(day_diff / 30) + " 月前"
-        return str(day_diff / 365) + " 天前"
+            return str(day_diff / 30) + " months ago"
+        return str(day_diff / 365) + " years ago"
 
     def content_process(self, content):
         # render content included gist

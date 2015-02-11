@@ -1386,9 +1386,9 @@ form .controls .avatar {
 }
 
 .about-me-pic {
-	height: 180px; border : 10px solid #E5E5E5;
+	height: 200px; border : 10px solid #E5E5E5;
 	background: url("../images/myphoto.png") no-repeat;
-	background-size: 180px 180px;
+	background-size: 200px 200px;
 	background-position: center bottom;
 	float: left;
 	border: 10px solid #E5E5E5;

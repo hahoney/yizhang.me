@@ -2,8 +2,10 @@
 # coding=utf-8
 #
 # Copyright 2012 Guokai (benben.cc)
-# Do have a faith in what you're doing.
-# Make your life a story worth telling.
+
+# The data access module has lots of issues
+# Unit tests have been performed and mistakes
+# have been corrected
 
 import re
 

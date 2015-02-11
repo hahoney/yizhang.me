@@ -10,5 +10,7 @@ encoding//lib/loader.py=utf-8
 encoding//lib/query.py=utf-8
 encoding//lib/session.py=utf-8
 encoding//model/node.py=utf-8
+encoding//model/topic.py=utf-8
+encoding//model/user.py=utf-8
 encoding/application.py=utf-8
 encoding/helper.py=utf-8
