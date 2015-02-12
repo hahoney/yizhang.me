@@ -1,0 +1,101 @@
+{% extends 'snippet/layout.html' %}
+
+{% block title %}
+    {{ topic.title }} - F2E
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="/static/css/codehilite.css" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="/static/js/widget/emmet.min.js"></script>
+    <script type="text/javascript" src="/static/js/widget/jquery.textarea.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            $('textarea.smart-code-support').tabby();
+            emmet.require('textarea').setup({
+                pretty_break: false, // enable formatted line breaks (when inserting // between opening and closing tag)
+                use_tab: false       // expand abbreviations by Tab key
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            $('.J_topicVote').click(function(e) {
+                var _node = $(this);
+                var _errorMap = {
+                    topic_not_exist: '主题不存在',
+                    can_not_vote_your_topic: '不能喜欢自己的主题',
+                    already_voted: '感谢已经表示过',
+                };
+                e.preventDefault();
+                $.getJSON(_node.attr('href'), function(data) {
+                    if(data.success) {
+                        _node.html('<span class="f11 gray" style="text-shadow: 0px 1px 0px #fff;">感谢已表示</span>');
+                    } else {
+                        _node.html('<span>' + _errorMap[data.message] + '</span>');
+                    }
+                });
+            });
+
+            $('.J_topicFavorite').click(function(e) {
+                var _node = $(this);
+                var _errorMap = {
+                    topic_not_exist: '主题不存在',
+                    can_not_favorite_your_topic: '不能收藏自己的主题',
+                    already_favorited: '之前已经收藏过了',
+                };
+                e.preventDefault();
+                $.getJSON(_node.attr('href'), function(data) {
+                    if(data.success) {
+                        _node.html('<span class="f11 gray" style="text-shadow: 0px 1px 0px #fff;">收藏成功</span>');
+                    } else {
+                        _node.html('<span>' + _errorMap[data.message] + '</span>');
+                    }
+                });
+            });
+
+            $('.J_replyTo').click(function(e) {
+                username = $(this).attr('data-username');
+                replyContent = $('.J_replyContent');
+                oldContent = replyContent.val();
+                prefix = "@" + username + " ";
+                newContent = '';
+                if(oldContent.length > 0){
+                    if (oldContent != prefix) {
+                        newContent = oldContent + "\n" + prefix;
+                    }
+                } else {
+                    newContent = prefix;
+                }
+                replyContent.focus();
+                replyContent.val(newContent);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+<div class="detail container-box yue">
+	<div class="hentry">
+			<h1 class="entry-title">
+				{{ topic.title }}
+			</h1>
+			<div class="entry-meta">
+				<time class="updated">{{ topic.last_touched }}</time>
+			<span class="dot">&middot;</span> <em> {{ topic.source }} {{ 782 }} words</em>
+			</div>
+			   
+			<div class="entry-content">
+				{{ topic.content|markdown|content_process }}
+			</div>
+	</div>
+</div>
+{% endblock %}
