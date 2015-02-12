@@ -24,7 +24,7 @@ a:active {
 {% if current_user %}
 <form action="/t/create/" method="get">
 <div class="yue section-input">
-	<input type="url" placeholder="Enter source link or blank for new post:" name="source" />
+	<input type="url" placeholder="Click SUBMIT or enter external URL to post new topic" name="source" />
 	<button data-url="" class="button">Submit</button>
 </div>
 </form>
@@ -37,15 +37,15 @@ a:active {
 			<li class="entry-item">
 				<div class="detail">
 					<h2>
-						<a href="/zh/2008/murmurs">{{ topic.title }}</a>
+						<a href="/t/{{ topic.id }}#reply{{ topic.reply_count or 0 }}">{{ topic.title }}</a>
 					</h2>
 					<div class="entry-meta">
 						<time class="updated">{{ topic.last_touched }}</time>
-						<span class="dot">&middot;</span> <em> www.auntbear.com {{
+						<span class="dot">&middot;</span> <em> {{ topic.source }} {{
 							782 }} words</em>
 					</div>
-					<a href="/zh/2008/murmurs" class="description">{{ topic.content }} <span class="entry-meta">view
-							full</span>
+					<a href="/t/{{ topic.id }}#reply{{ topic.reply_count or 0 }}" class="description">
+					{{ topic.content_brief }} <span class="entry-meta">viewfull</span>
 					</a>
 				</div>
 			</li>
@@ -58,7 +58,7 @@ a:active {
 </div>
 
 <div class="nodes-cloud container-box mt10">
-	<h4 class="title">F2E / 常见节点导航</h4>
+	<h4 class="title">Node Navigator</h4>
 	<ul>
 		{% for plane in planes %}
 		<li><label for="">{{ plane.name }}</label> <span class="nodes">

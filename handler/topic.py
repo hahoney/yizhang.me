@@ -26,6 +26,8 @@ from lib.variables import gen_random
 from lib.xss import XssCleaner
 from lib.utils import find_mentions
 
+from lib import externdoc
+
 class IndexHandler(BaseHandler):
     def get(self, template_variables={}):
         user_info = self.current_user
@@ -218,6 +220,12 @@ class ViewHandler(BaseHandler):
 class CreateHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, node_slug=None, template_variables={}):
+        source = self.get_argument("source", None)
+        if source:
+            
+            self.redirect("/blog")
+            return
+        
         user_info = self.current_user
         template_variables["user_info"] = user_info
         template_variables["user_info"]["counter"] = {
@@ -251,6 +259,7 @@ class CreateHandler(BaseHandler):
             "title": form.title.data,
             # "content": XssCleaner().strip(form.content.data),
             "content": form.content.data,
+            "content_brief": self._setbrief(form.content.data),
             "node_id": node["id"],
             "created": time.strftime('%Y-%m-%d %H:%M:%S'),
             "reply_count": 0,
@@ -265,6 +274,31 @@ class CreateHandler(BaseHandler):
         reputation = 0 if reputation < 0 else reputation
         self.user_model.set_user_base_info_by_uid(topic_info["author_id"], {"reputation": reputation})
         self.redirect("/")
+        
+    def _setbrief(self, content):
+        ''' This function convert the full text to a brieft text
+        for fast indexing. 
+        usage: _brief(var content:string):string
+        '''
+        MAX_CHAR_WIDTH = 240
+        effect_char = 0
+        content_count = 0
+        
+        for word in content:
+            if effect_char >= MAX_CHAR_WIDTH: 
+                break
+            print content_count
+            if isinstance(word, unicode):
+                content_count += 1
+                if word >= u'\u4e00' and word <=u'\u9fa5': # if Chinese character
+                    effect_char += 2
+                else:
+                    effect_char += 1
+            elif isinstance(word, str):
+                effect_char += 1
+                content_count += 1
+        
+        return content[:content_count] + " ..." if content_count < len(content) else content[:content_count]
 
 class EditHandler(BaseHandler):
     @tornado.web.authenticated

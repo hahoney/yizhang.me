@@ -550,7 +550,8 @@ body {
 }
 
 .entry-list .description {
-	font-size: 18px
+	font-size: 18px;
+	word-break: break-all
 }
 
 .hentry .entry-title {
@@ -570,9 +571,9 @@ body {
 	border-bottom: 1px solid #eee
 }
 
-.hentry .entry-meta .updated:after {
+/*.hentry .entry-meta .updated:after {
 	content: ' â€” '
-}
+}*/
 
 .hentry .entry-footer {
 	color: #999;

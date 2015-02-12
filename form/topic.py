@@ -10,25 +10,25 @@ from lib.forms import Form
 
 class ReplyForm(Form):
     content = TextField('Content', [
-        validators.Required(message = "请填写回复内容"),
+        validators.Required(message = "Content cannot be empty"),
     ])
 
-    tid = TextField('Tid', [
-        validators.Required(message = "要回复的帖子不明确"),
+    tid = TextField('Title', [
+        validators.Required(message = "Which topic do you reply"),
     ])
 
 class CreateForm(Form):
     title = TextField('Title', [
-        validators.Required(message = "请填写帖子标题"),
-        validators.Length(min = 3, message = "帖子标题长度过短（3-56个字符）"),
-        validators.Length(max = 56, message = "帖子标题长度过长（3-56个字符）"),
+        validators.Required(message = "Title cannot be empty"),
+        validators.Length(min = 3, message = "Title too short (3-56chars)"),
+        validators.Length(max = 56, message = "Title too long (3-56chars)"),
     ])
 
     content = TextField('Content', [
-        validators.Required(message = "请填写帖子内容"),
+        validators.Required(message = "Content cannot be empty"),
     ])
 
 class ReplyEditForm(Form):
     content = TextField('Content', [
-        validators.Required(message = "请填写回复内容"),
+        validators.Required(message = "Content cannot be empty"),
     ])

@@ -142,4 +142,5 @@ class Filters():
     def markdown(self, content):
         if not content:
             return ""
-        return markdown(content, extensions = ['codehilite', 'fenced_code', 'mathjax'], safe_mode = 'escape')
+#        return markdown(content, extensions = ['codehilite', 'fenced_code', 'mathjax'], safe_mode = 'escape')
+        return markdown(content, extensions = ['codehilite', 'fenced_code'], safe_mode = 'escape')
